@@ -3,11 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой первый сайт</title>
+    <title>Мой Кинопоиск</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Подключаем шрифт Inter (как на Кинопоиске) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Привет, мир!</h1>
-    <p>Это мой мини-сайт, созданный с нуля.</p>
+
+    <!-- Шапка сайта -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">Кинопоиск<span>.</span></div>
+            <div class="search-bar">
+                <input type="text" placeholder="Поиск фильмов, сериалов...">
+                <button>Найти</button>
+            </div>
+            <div class="profile">Войти</div>
+        </div>
+    </header>
+
+    <!-- Главный баннер -->
+    <section class="hero container">
+        <div class="hero-content">
+            <h1>Дюна: Часть вторая</h1>
+            <p>Пол Атрейдес объединяется с Чани и фременами, чтобы отомстить заговорщикам, уничтожившим его семью.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary">Смотреть</button>
+                <button class="btn-secondary">В трейлеры</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Сетка с фильмами -->
+    <main class="container">
+        <h2 class="section-title">Популярное сейчас</h2>
+        
+        <div class="movie-grid">
+            <!-- Карточка 1 -->
+            <div class="movie-card">
+                <div class="poster" style="background-image: url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=500&auto=format&fit=crop');"></div>
+                <div class="movie-info">
+                    <span class="rating">8.7</span>
+                    <h3>Оппенгеймер</h3>
+                    <p>2023, Биография, Драма</p>
+                </div>
+            </div>
+
+            <!-- Карточка 2 -->
+            <div class="movie-card">
+                <div class="poster" style="background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=500&auto=format&fit=crop');"></div>
+                <div class="movie-info">
+                    <span class="rating">8.5</span>
+                    <h3>Барби</h3>
+                    <p>2023, Комедия, Фэнтези</p>
+                </div>
+            </div>
+
+            <!-- Карточка 3 -->
+            <div class="movie-card">
+                <div class="poster" style="background-image: url('https://images.unsplash.com/photo-1616530940355-351fabd9524b?q=80&w=500&auto=format&fit=crop');"></div>
+                <div class="movie-info">
+                    <span class="rating">7.9</span>
+                    <h3>Стражи Галактики 3</h3>
+                    <p>2023, Фантастика, Боевик</p>
+                </div>
+            </div>
+
+            <!-- Карточка 4 -->
+            <div class="movie-card">
+                <div class="poster" style="background-image: url('https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?q=80&w=500&auto=format&fit=crop');"></div>
+                <div class="movie-info">
+                    <span class="rating">8.2</span>
+                    <h3>Джон Уик 4</h3>
+                    <p>2023, Боевик, Триллер</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
 </body>
 </html>
