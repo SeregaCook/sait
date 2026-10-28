@@ -58,11 +58,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        // ВАШИ КЛЮЧИ
+        // ВАШИ КЛЮЧИ (URL теперь указывает на ваш Cloudflare Worker)
         const SUPABASE_URL = 'https://calm-pine-3c99.school90800.workers.dev';
         const SUPABASE_ANON_KEY = 'sb_publishable_g6oW-l1B4QO5W2MW5LnymQ_yYZaNuTY';
 
-        // Инициализация (используем имя supabaseClient, чтобы не было конфликта)
+        // Инициализация клиента (используем supabaseClient)
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // --- ЛОГИКА ЗАГРУЗКИ ФИЛЬМОВ ---
@@ -72,7 +72,7 @@
                 
                 if (error) {
                     console.error('Ошибка загрузки фильмов:', error);
-                    document.getElementById('movie-grid').innerHTML = '<p style="color:red">Ошибка загрузки базы данных. Проверьте RLS.</p>';
+                    document.getElementById('movie-grid').innerHTML = `<p style="color:red">Ошибка: ${error.message || error.details || JSON.stringify(error)}</p>`;
                     return;
                 }
 
@@ -98,6 +98,7 @@
                 });
             } catch (err) {
                 console.error('Критическая ошибка в скрипте:', err);
+                document.getElementById('movie-grid').innerHTML = `<p style="color:red">Критическая ошибка: ${err.message}</p>`;
             }
         }
 
@@ -173,6 +174,7 @@
             }
         });
 
+        // --- ОБНОВЛЕНИЕ КНОПКИ В ШАПКЕ ---
         async function updateAuthUI() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
@@ -188,6 +190,7 @@
 
         supabaseClient.auth.onAuthStateChange(() => { updateAuthUI(); });
 
+        // ЗАПУСК
         loadMovies();
         updateAuthUI();
     </script>
