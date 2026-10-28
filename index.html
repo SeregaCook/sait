@@ -13,10 +13,12 @@
         <div class="container header-content">
             <div class="logo">Кинопоиск<span>.</span></div>
             <div class="search-bar">
-                <input type="text" placeholder="Поиск фильмов, сериалов...">
+                <!-- Добавили id="search-input" для работы поиска -->
+                <input type="text" id="search-input" placeholder="Поиск фильмов...">
                 <button>Найти</button>
             </div>
-            <div class="profile">Войти</div>
+            <!-- Сюда мы потом добавим кнопки Войти/Профиль -->
+            <div class="profile" id="auth-status">Войти</div>
         </div>
     </header>
 
@@ -34,48 +36,76 @@
     <main class="container">
         <h2 class="section-title">Популярное сейчас</h2>
         
-        <div class="movie-grid">
-            <!-- Карточка 1 -->
-            <a href="oppenheimer.html" class="movie-card">
-                <div class="poster" style="background-image: url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=500&auto=format&fit=crop');"></div>
-                <div class="movie-info">
-                    <span class="rating">8.7</span>
-                    <h3>Оппенгеймер</h3>
-                    <p>2023, Биография, Драма</p>
-                </div>
-            </a>
-
-            <!-- Карточка 2 -->
-            <a href="barbie.html" class="movie-card">
-                <div class="poster" style="background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=500&auto=format&fit=crop');"></div>
-                <div class="movie-info">
-                    <span class="rating">8.5</span>
-                    <h3>Барби</h3>
-                    <p>2023, Комедия, Фэнтези</p>
-                </div>
-            </a>
-
-            <!-- Карточка 3 -->
-            <a href="gotg.html" class="movie-card">
-                <div class="poster" style="background-image: url('https://images.unsplash.com/photo-1616530940355-351fabd9524b?q=80&w=500&auto=format&fit=crop');"></div>
-                <div class="movie-info">
-                    <span class="rating">7.9</span>
-                    <h3>Стражи Галактики 3</h3>
-                    <p>2023, Фантастика, Боевик</p>
-                </div>
-            </a>
-
-            <!-- Карточка 4 -->
-            <a href="johnwick.html" class="movie-card">
-                <div class="poster" style="background-image: url('https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?q=80&w=500&auto=format&fit=crop');"></div>
-                <div class="movie-info">
-                    <span class="rating">8.2</span>
-                    <h3>Джон Уик 4</h3>
-                    <p>2023, Боевик, Триллер</p>
-                </div>
-            </a>
+        <!-- Сетка теперь пустая, фильмы загрузятся через JS -->
+        <div class="movie-grid" id="movie-grid">
+            <!-- Здесь будет скелетон (заглушка), пока идет загрузка -->
+            <p>Загрузка фильмов...</p>
         </div>
     </main>
 
+    <!-- ПОДКЛЮЧАЕМ SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // ВСТАВЬТЕ СЮДА ВАШИ КЛЮЧИ ИЗ SUPABASE
+        const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'ВАШ_ANON_KEY';
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Функция для загрузки фильмов из БД
+        async function loadMovies() {
+            const { data: movies, error } = await supabase
+                .from('movies')
+                .select('*')
+                .order('rating', { ascending: false }); // Сортируем по рейтингу
+
+            if (error) {
+                console.error('Ошибка загрузки:', error);
+                return;
+            }
+
+            renderMovies(movies);
+        }
+
+        // Функция для отрисовки карточек на странице
+        function renderMovies(movies) {
+            const grid = document.getElementById('movie-grid');
+            grid.innerHTML = ''; // Очищаем экран
+
+            movies.forEach(movie => {
+                // Создаем HTML для одной карточки
+                const cardHTML = `
+                    <a href="#" class="movie-card">
+                        <div class="poster" style="background-image: url('${movie.poster_url}');"></div>
+                        <div class="movie-info">
+                            <span class="rating">${movie.rating}</span>
+                            <h3>${movie.title}</h3>
+                            <p>${movie.year}, ${movie.genre}</p>
+                        </div>
+                    </a>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+        }
+
+        // РАБОЧИЙ ПОИСК
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.movie-card');
+
+            cards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Запускаем загрузку при открытии страницы
+        loadMovies();
+    </script>
 </body>
 </html>
