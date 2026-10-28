@@ -1,4 +1,4 @@
-/* Сброс стилей и базовые настройки */
+/* --- БАЗОВЫЕ НАСТРОЙКИ --- */
 * {
     margin: 0;
     padding: 0;
@@ -17,7 +17,7 @@ body {
     padding: 0 20px;
 }
 
-/* Шапка сайта */
+/* --- ШАПКА САЙТА --- */
 .header {
     background-color: #141414;
     padding: 15px 0;
@@ -68,12 +68,23 @@ body {
     font-weight: 500;
 }
 
+/* Кнопка Войти (стилизованная) */
 .profile {
     cursor: pointer;
     font-weight: 500;
+    padding: 8px 16px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    transition: all 0.2s;
+    user-select: none;
 }
 
-/* Главный баннер */
+.profile:hover {
+    border-color: #ff5500;
+    color: #ff5500;
+}
+
+/* --- ГЛАВНЫЙ БАННЕР --- */
 .hero {
     margin-top: 30px;
     height: 400px;
@@ -128,7 +139,7 @@ body {
     background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Сетка фильмов */
+/* --- СЕТКА ФИЛЬМОВ --- */
 .section-title {
     margin: 40px 0 20px 0;
     font-size: 24px;
@@ -141,10 +152,9 @@ body {
     margin-bottom: 50px;
 }
 
-/* Карточка фильма (ссылка) */
 a.movie-card {
-    text-decoration: none; /* Убираем подчеркивание */
-    color: #ffffff;        /* Делаем текст белым */
+    text-decoration: none;
+    color: #ffffff;
     display: block;
     background-color: #222;
     border-radius: 12px;
@@ -169,7 +179,7 @@ a.movie-card:hover {
 }
 
 .rating {
-    background-color: #01b356; /* Зеленая плашка рейтинга */
+    background-color: #01b356;
     color: white;
     font-weight: 700;
     padding: 4px 8px;
@@ -191,7 +201,7 @@ a.movie-card:hover {
     color: #888;
 }
 
-/* --- Стили для страниц самих фильмов --- */
+/* --- СТРАНИЦА ОТДЕЛЬНОГО ФИЛЬМА --- */
 .movie-page-container {
     margin-top: 40px;
     display: flex;
@@ -245,7 +255,7 @@ a.movie-card:hover {
     text-decoration: underline;
 }
 
-/* --- СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА АВТОРИЗАЦИИ --- */
+/* --- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ --- */
 .modal {
     display: none; /* Скрыто по умолчанию */
     position: fixed;
@@ -253,7 +263,7 @@ a.movie-card:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Темный полупрозрачный фон */
+    background-color: rgba(0, 0, 0, 0.8);
     z-index: 1000;
     justify-content: center;
     align-items: center;
