@@ -1,3 +1,4 @@
+/* Сброс стилей и базовые настройки */
 * {
     margin: 0;
     padding: 0;
@@ -16,7 +17,7 @@ body {
     padding: 0 20px;
 }
 
-/* Шапка */
+/* Шапка сайта */
 .header {
     background-color: #141414;
     padding: 15px 0;
@@ -168,7 +169,7 @@ a.movie-card:hover {
 }
 
 .rating {
-    background-color: #01b356;
+    background-color: #01b356; /* Зеленая плашка рейтинга */
     color: white;
     font-weight: 700;
     padding: 4px 8px;
