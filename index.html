@@ -33,40 +33,55 @@
 
     <main class="container">
         <h2 class="section-title">Популярное сейчас</h2>
-        
         <div class="movie-grid" id="movie-grid">
             <p>Загрузка фильмов...</p>
         </div>
     </main>
 
-    <!-- Подключаем Supabase -->
+    <!-- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2 id="modal-title">Вход в аккаунт</h2>
+            <form id="auth-form">
+                <input type="email" id="auth-email" placeholder="Email" required>
+                <input type="password" id="auth-password" placeholder="Пароль" required>
+                <button type="submit" class="btn-primary" id="auth-submit-btn">Войти</button>
+            </form>
+            <p class="toggle-text">
+                <span id="toggle-auth-mode">Нет аккаунта? Зарегистрироваться</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- ПОДКЛЮЧЕНИЕ SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        // ВСТАВЬТЕ ВАШИ КЛЮЧИ СЮДА:
-        const SUPABASE_URL = 'https://queubruxsbptjizykbycc.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_g6oW-l1B4QO5W2MW5LnymQ_yYZaNuTY';
+        // =====================================================================
+        // ⚠️ ВНИМАНИЕ: ВСТАВЬТЕ ВАШИ КЛЮЧИ ЗДЕСЬ!
+        const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'ВАШ_PUBLISHABLE_KEY';
+        // =====================================================================
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Инициализация клиента (используем window.supabase)
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Загрузка фильмов из базы
+        // --- ЛОГИКА ЗАГРУЗКИ ФИЛЬМОВ ---
         async function loadMovies() {
-            const { data: movies, error } = await supabase
-                .from('movies')
-                .select('*')
-                .order('rating', { ascending: false });
-
+            const { data: movies, error } = await supabase.from('movies').select('*').order('rating', { ascending: false });
+            
             if (error) {
-                console.error('Ошибка:', error);
-                document.getElementById('movie-grid').innerHTML = '<p>Ошибка загрузки фильмов.</p>';
+                console.error('Ошибка загрузки фильмов:', error);
+                document.getElementById('movie-grid').innerHTML = '<p style="color:red">Ошибка загрузки базы данных.</p>';
                 return;
             }
 
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = '';
-
+            
             movies.forEach(movie => {
-                const cardHTML = `
+                grid.innerHTML += `
                     <a href="#" class="movie-card">
                         <div class="poster" style="background-image: url('${movie.poster_url}');"></div>
                         <div class="movie-info">
@@ -76,27 +91,100 @@
                         </div>
                     </a>
                 `;
-                grid.innerHTML += cardHTML;
             });
         }
 
-        // Рабочий поиск
+        // --- ПОИСК ---
         document.getElementById('search-input').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.movie-card');
-
-            cards.forEach(card => {
+            document.querySelectorAll('.movie-card').forEach(card => {
                 const title = card.querySelector('h3').textContent.toLowerCase();
-                if (title.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = title.includes(searchTerm) ? 'block' : 'none';
             });
         });
 
-        // Запуск
+        // --- АВТОРИЗАЦИЯ (ВХОД/ВЫХОД) ---
+        const modal = document.getElementById('auth-modal');
+        const authStatusBtn = document.getElementById('auth-status');
+        const closeBtn = document.getElementById('close-modal');
+        const authForm = document.getElementById('auth-form');
+        const modalTitle = document.getElementById('modal-title');
+        const submitBtn = document.getElementById('auth-submit-btn');
+        const toggleAuthMode = document.getElementById('toggle-auth-mode');
+
+        let isLoginMode = true;
+
+        authStatusBtn.addEventListener('click', async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                await supabase.auth.signOut(); // Выход
+                return;
+            }
+            modal.style.display = 'flex'; // Открытие окна
+        });
+
+        closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+        toggleAuthMode.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                modalTitle.textContent = 'Вход в аккаунт';
+                submitBtn.textContent = 'Войти';
+                toggleAuthMode.textContent = 'Нет аккаунта? Зарегистрироваться';
+            } else {
+                modalTitle.textContent = 'Регистрация';
+                submitBtn.textContent = 'Создать аккаунт';
+                toggleAuthMode.textContent = 'Уже есть аккаунт? Войти';
+            }
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            submitBtn.textContent = 'Загрузка...';
+            submitBtn.disabled = true;
+
+            let error;
+            if (isLoginMode) {
+                const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+                error = loginError;
+            } else {
+                const { error: signUpError } = await supabase.auth.signUp({ email, password });
+                error = signUpError;
+            }
+
+            if (error) {
+                alert('Ошибка: ' + error.message);
+                submitBtn.textContent = isLoginMode ? 'Войти' : 'Создать аккаунт';
+                submitBtn.disabled = false;
+            } else {
+                modal.style.display = 'none';
+                authForm.reset();
+            }
+        });
+
+        // --- ОБНОВЛЕНИЕ КНОПКИ В ШАПКЕ ---
+        async function updateAuthUI() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                authStatusBtn.textContent = session.user.email.split('@')[0] + ' (Выйти)';
+                authStatusBtn.style.color = '#ff5500';
+                authStatusBtn.style.borderColor = '#ff5500';
+            } else {
+                authStatusBtn.textContent = 'Войти';
+                authStatusBtn.style.color = '#ffffff';
+                authStatusBtn.style.borderColor = '#444';
+            }
+        }
+
+        supabase.auth.onAuthStateChange(() => { updateAuthUI(); });
+
+        // ЗАПУСК
         loadMovies();
+        updateAuthUI();
     </script>
 </body>
 </html>
