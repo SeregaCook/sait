@@ -13,11 +13,9 @@
         <div class="container header-content">
             <div class="logo">Кинопоиск<span>.</span></div>
             <div class="search-bar">
-                <!-- Добавили id="search-input" для работы поиска -->
                 <input type="text" id="search-input" placeholder="Поиск фильмов...">
                 <button>Найти</button>
             </div>
-            <!-- Сюда мы потом добавим кнопки Войти/Профиль -->
             <div class="profile" id="auth-status">Войти</div>
         </div>
     </header>
@@ -36,45 +34,38 @@
     <main class="container">
         <h2 class="section-title">Популярное сейчас</h2>
         
-        <!-- Сетка теперь пустая, фильмы загрузятся через JS -->
         <div class="movie-grid" id="movie-grid">
-            <!-- Здесь будет скелетон (заглушка), пока идет загрузка -->
             <p>Загрузка фильмов...</p>
         </div>
     </main>
 
-    <!-- ПОДКЛЮЧАЕМ SUPABASE -->
+    <!-- Подключаем Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        // ВСТАВЬТЕ СЮДА ВАШИ КЛЮЧИ ИЗ SUPABASE
-        const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'ВАШ_ANON_KEY';
+        // ВСТАВЬТЕ ВАШИ КЛЮЧИ СЮДА:
+        const SUPABASE_URL = 'https://queubruxsbptjizykbycc.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_g6oW-l1B4QO5W2MW5LnymQ_yYZaNuTY';
 
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Функция для загрузки фильмов из БД
+        // Загрузка фильмов из базы
         async function loadMovies() {
             const { data: movies, error } = await supabase
                 .from('movies')
                 .select('*')
-                .order('rating', { ascending: false }); // Сортируем по рейтингу
+                .order('rating', { ascending: false });
 
             if (error) {
-                console.error('Ошибка загрузки:', error);
+                console.error('Ошибка:', error);
+                document.getElementById('movie-grid').innerHTML = '<p>Ошибка загрузки фильмов.</p>';
                 return;
             }
 
-            renderMovies(movies);
-        }
-
-        // Функция для отрисовки карточек на странице
-        function renderMovies(movies) {
             const grid = document.getElementById('movie-grid');
-            grid.innerHTML = ''; // Очищаем экран
+            grid.innerHTML = '';
 
             movies.forEach(movie => {
-                // Создаем HTML для одной карточки
                 const cardHTML = `
                     <a href="#" class="movie-card">
                         <div class="poster" style="background-image: url('${movie.poster_url}');"></div>
@@ -89,7 +80,7 @@
             });
         }
 
-        // РАБОЧИЙ ПОИСК
+        // Рабочий поиск
         document.getElementById('search-input').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
             const cards = document.querySelectorAll('.movie-card');
@@ -104,7 +95,7 @@
             });
         });
 
-        // Запускаем загрузку при открытии страницы
+        // Запуск
         loadMovies();
     </script>
 </body>
