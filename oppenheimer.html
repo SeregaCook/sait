@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оппенгеймер - Мой Кинопоиск</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">Кинопоиск<span>.</span></div>
+            <div class="search-bar">
+                <input type="text" placeholder="Поиск фильмов, сериалов...">
+                <button>Найти</button>
+            </div>
+            <div class="profile">Войти</div>
+        </div>
+    </header>
+
+    <main class="container">
+        <a href="index.html" class="back-btn">← Вернуться на главную</a>
+        
+        <div class="movie-page-container">
+            <!-- Постер фильма -->
+            <div class="movie-page-poster" style="background-image: url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=500&auto=format&fit=crop');"></div>
+            
+            <!-- Информация о фильме -->
+            <div class="movie-page-info">
+                <h1>Оппенгеймер</h1>
+                <div class="meta">
+                    <span class="rating">8.7</span> • 2023 • Биография, Драма • 180 мин
+                </div>
+                <p class="full-desc">
+                    История жизни Роберта Оппенгеймера, американского физика-теоретика, который руководил разработкой первого ядерного оружия в рамках Манхэттенского проекта. Фильм рассказывает не только о научном прорыве, но и о тяжелых моральных терзаниях ученого, осознавшего последствия своего изобретения для всего человечества.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn-primary">Смотреть</button>
+                    <button class="btn-secondary">Трейлер</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
